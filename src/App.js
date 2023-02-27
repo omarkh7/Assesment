@@ -1,23 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 function App() {
+  const [alldata, setAllData] = useState([]);
+  const apiURL = "http://localhost:5000/api/goals";
+
+  const fetchallData = async () => {
+    try {
+      const response = await axios.get(apiURL);
+      console.log(response.data);
+      setAllData(response.data);
+    } catch (error) {
+      console.error(error);
+      setAllData([]);
+    }
+  };
+  useEffect(() => {
+    fetchallData();
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {alldata.length > 0? (
+        
+        alldata.map((info) => (
+          <div key={info._id}>
+            <h1>{info.title}</h1>
+            <p >{info.description}</p>
+          </div>
+        ))
+      ) : (
+        <p>No data available</p>
+      )}
     </div>
   );
 }
